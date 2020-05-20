@@ -76,6 +76,15 @@ def after_request(response) :
 from blueprints.auth import bp_auth
 app.register_blueprint(bp_auth, url_prefix='/auth')
 
+from blueprints.category.resources import bp_category
+app.register_blueprint(bp_category, url_prefix='/category')
+
+from blueprints.subcategory.resources import bp_subcategory
+app.register_blueprint(bp_subcategory, url_prefix='/subcategory')
+
+from blueprints.product.resources import bp_product
+app.register_blueprint(bp_product, url_prefix='/product')
+
 from blueprints.client.resources import bp_client
 app.register_blueprint(bp_client, url_prefix='/client')
 
