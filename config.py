@@ -17,6 +17,8 @@ class Config():
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = cfg['jwt']['secret_key']
+    IMG_URL = cfg['imgURL']['url']
+    IMG_CLIENT_ID = cfg['imgURL']['clientID']
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
     
 
