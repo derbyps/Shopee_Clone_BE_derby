@@ -13,7 +13,7 @@ class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     seller_id = db.Column(db.Integer, ForeignKey(Clients.id, ondelete='CASCADE'), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey(Categories.id, ondelete='CASCADE'), nullable=False)
-    subcategory_id = db.Coumn(db.Integer, ForeignKey(SubCategories.id, ondelete='CASCADE'), nullable=False)
+    subcategory_id = db.Column(db.Integer, ForeignKey(SubCategories.id, ondelete='CASCADE'), nullable=False)
     url_image = db.Column(db.String(255))
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Integer, nullable=False)
