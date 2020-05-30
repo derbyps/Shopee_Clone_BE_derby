@@ -77,10 +77,6 @@ class ClientResource(Resource):
                 return 'id is not found', 404, {
                 'Content-Type':'application/json'
                 }
-        else:                
-            return 'id tidak masuk', 404, {
-                'Content-Type':'application/json'
-                }
         
 class ClientList(Resource):
     

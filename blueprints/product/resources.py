@@ -76,57 +76,6 @@ class ProductResources(Resource):
         
         return marshal(product, Products.response_fields), 200, {'Content-Type': 'application/json'}
 
-    # @jwt_required
-    # def put(self, id=None):
-    #     qry = Products.query.get(id)
-    #     if id == qry.seller_id:
-    #         parser = reqparse.RequestParser()
-    #         parser.add_argument('url_image', location='json')
-    #         parser.add_argument('name', location='json', required=True)
-    #         parser.add_argument('price', location='json', required=True)
-    #         parser.add_argument('stock', location='json')
-    #         parser.add_argument('category_id', location='json')
-    #         parser.add_argument('subcategory_id', location='json')
-    #         args = parser.parse_args()
-
-    #         claims = get_jwt_claims()
-    #         qry_seller = Clients.query.filter_by(id=claims["id"]).first()
-    #         seller_id = qry_seller.id
-    #         qry_product = Products.query.filter_by(seller_id=seller_id).all()
-    #         qry = qry_product.get(id)
-            
-    #         if qry is None:
-    #             return {'status': 'NOT_FOUND'}, 404
-
-    #         qry.url_image = args['url_image']
-    #         qry.name = args['name']
-    #         qry.price = args['price']
-    #         qry.stock = args['stock']
-    #         qry.category_id = args['category_id']
-    #         qry.subcategory_id = args['subcategory_id']
-    #         qry.updated_at = datetime.now()
-            
-    #         db.session.commit()
-            
-    #         return marshal(qry, Products.response_field), 200, {'Content-Type': 'application/json'}
-
-    # @jwt_required
-    # def delete(self, id):
-    #     claims = get_jwt_claims()
-    #     qry_seller = Users.query.filter_by(client_id=claims["id"]).first()
-    #     seller_id = qry_seller.id
-    #     qry_product = Products.query.filter_by(seller_id=user_id).all()
-    #     qry = qry_product.get(id)
-
-    #     if qry is None:
-    #         return {'status': 'NOT_FOUND'}, 404
-    #     db.session.delete(qry)
-    #     db.session.commit()
-    #     return {'status': 'DELETED'}, 200
-
-    #     return {'status': 'DELETED'}, 200
-
-
 class ProductList(Resource):
 
     def get(self):
@@ -146,9 +95,6 @@ class ProductList(Resource):
         if args['name'] is not None:
             qry = qry.filter_by(name=args['name'])
 
-        if args['size'] is not None:
-            qry = qry.filter_by(size=args['size'])
-
         if args['price'] is not None:
             qry = qry.filter_by(price=args['price'])
 
@@ -158,11 +104,6 @@ class ProductList(Resource):
                     qry = qry.order_by(desc(Products.name))
                 else:
                     qry = qry.order_by(Products.name)
-            elif args['orderby'] == 'size':
-                if args['sort'] == 'desc':
-                    qry = qry.order_by(desc(Products.size))
-                else:
-                    qry = qry.order_by(Products.size)
             elif args['orderby'] == 'price':
                 if args['sort'] == 'desc':
                     qry = qry.order_by(desc(Products.price))
@@ -178,58 +119,5 @@ class ProductList(Resource):
 
         return rows, 200
     
-class ProductListCategory(Resource):
-    
-    def get(self, id):
-        parser = reqparse.RequestParser()
-        parser.add_argument('p', type=int, location='args', default=1)
-        parser.add_argument('rp', type=int, location='args', default=25)
-        parser.add_argument('name', location='args')
-        parser.add_argument('size', location='args')
-        parser.add_argument('price', location='args')
-        parser.add_argument('orderby', location='args', help='invalid orderby value', choices=('name', 'size', 'price'))
-        parser.add_argument('sort', location='args', help='invalid sort value', choices=('desc', 'asc'))
-        args = parser.parse_args()
-
-        offset = (args['p'] * args['rp']) - args['rp']
-        qry = Products.query
-
-        if args['name'] is not None:
-            qry = qry.filter_by(name=args['name'])
-
-        if args['size'] is not None:
-            qry = qry.filter_by(size=args['size'])
-
-        if args['price'] is not None:
-            qry = qry.filter_by(price=args['price'])
-
-        if args['orderby'] is not None:
-            if args['orderby'] == 'name':
-                if args['sort'] == 'desc':
-                    qry = qry.order_by(desc(Products.name))
-                else:
-                    qry = qry.order_by(Products.name)
-            elif args['orderby'] == 'size':
-                if args['sort'] == 'desc':
-                    qry = qry.order_by(desc(Products.size))
-                else:
-                    qry = qry.order_by(Products.size)
-            elif args['orderby'] == 'price':
-                if args['sort'] == 'desc':
-                    qry = qry.order_by(desc(Products.price))
-                else:
-                    qry = qry.order_by(Products.price)
-
-        rows = []
-        for row in qry.limit(args['rp']).offset(offset).all():
-            QRY = marshal(row, Products.response_fields)
-            cat = Categories.query.filter_by(id=QRY['category_id']).first()
-            QRY["cat_detail"] = marshal(cat, Categories.response_fields)
-            rows.append(QRY)
-
-        return rows, 200
-
-
 api.add_resource(ProductResources,'','/<id>')
 api.add_resource(ProductList, '', '/list')
-api.add_resource(ProductListCategory, '', '/category/<id>')

@@ -8,9 +8,9 @@ from flask_restful import Resource, Api
 from logging.handlers import RotatingFileHandler
 from flask_migrate import Migrate, MigrateCommand
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt_claims
-# from werkzeug.contrib.cache import SimpleCache
+from werkzeug.contrib.cache import SimpleCache
 
-# cache = SimpleCache()
+cache = SimpleCache()
 
 app = Flask(__name__)
 
@@ -22,7 +22,7 @@ jwt = JWTManager(app)
 if os.environ.get('FLASK_ENV', 'Production') == "Production":
     app.config.from_object(config.ProductionConfig)
 elif os.environ.get('FLASK_ENV', 'Production') == "Testing":
-    app.config.from_object(config.TestingConfig)
+    app.config.from_object(config.Testing)
 else:
     app.config.from_object(config.DevelopmentConfig)
 

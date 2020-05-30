@@ -31,3 +31,23 @@ class ProductionConfig(Config):
     APP_DEBUG = False
     DEBUG = False
     MAX_BYTES = 10000
+    
+class Testing(Config):
+    SQLALCHEMY_DATABASE_URI = '%s+%s://%s:%s@%s:%s/%s_testing' % (
+        cfg['database']['default_connection'],
+        cfg['mysql']['driver'],
+        cfg['mysql']['user'],
+        cfg['mysql']['password'],
+        cfg['mysql']['host'],
+        cfg['mysql']['port'],
+        cfg['mysql']['db']
+    )
+    APP_DEBUG = True
+    DEBUG = True
+    MAX_BYTES = 10000
+    APP_PORT = 5050
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = cfg['jwt']['secret_key']
+    IMG_URL = cfg['imgURL']['url']
+    IMG_CLIENT_ID = cfg['imgURL']['clientID']
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)

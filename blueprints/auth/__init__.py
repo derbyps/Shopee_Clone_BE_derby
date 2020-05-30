@@ -28,11 +28,6 @@ class CreateTokenResource(Resource):
         else:
             return {'status': 'UNAUTHORIZED', 'message':'invalid key or secret'}, 401
 
-    @jwt_required
-    def post(self):
-        claims = get_jwt_claims()
-        return {'claims': claims}, 200
-
 class RefreshTokenResource(Resource):
     
     @jwt_required
